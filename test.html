@@ -1,0 +1,137 @@
+<html>
+<head>
+    <script src="http://localhost:1090/socket.io/socket.io.js"></script> 
+</head>
+
+
+<body>
+
+<div id="lobby">
+    <table>
+        <tr>
+            <td>
+                User name:
+            </td>
+            <td>
+                <input type="text" id="userName"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Game name:
+            </td>
+            <td>
+                <input type="text" id="gameName"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+                <input type="button" value="Create!" onclick="createGame()" />
+                <input type="button" value="Join!" onclick="joinGame()" />
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="game" style="visibility: hidden">
+    <table>
+        <tr>
+            <td>
+                Players:
+            </td>
+            <td>
+                Blah blah blah
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<script>
+
+    function getUserName(){
+        return document.getElementById('userName').value;
+    }
+    
+    function getGameName(){
+        return document.getElementById('gameName').value;
+    }
+    
+    function socketConnect(userName, gameName){
+        var socket = new io.Socket("localhost:1090"); 
+        socket.on('connect', function(){
+            socket.send(userName + "." + gameName);
+        });
+        socket.on('message', function(msg){
+            alert(msg);
+        });
+        socket.on('disconnect', function(){
+            //alert("disconnect socket");
+        });
+        socket.connect();
+    }
+
+    function createGame(){
+        var request = new XMLHttpRequest();
+        var userName = getUserName();
+        var gameName = getGameName();
+        
+        var url = "/createGame?userName=" + escape(userName) +
+                             "&gameName=" + escape(gameName);
+        request.open("GET", url, true);
+        request.onreadystatechange = requestCallBack(request, userName, gameName);
+        request.send(null);
+    }
+    
+    function joinGame(){
+        var request = new XMLHttpRequest();
+        var userName = getUserName();
+        var gameName = getGameName();
+        var url = "/joinGame?userName=" + escape(userName) +
+                           "&gameName=" + escape(gameName);
+        request.open("GET", url, true);
+        request.onreadystatechange = requestCallBack(request, userName, gameName);
+        request.send(null);
+    }
+    
+    function requestCallBack(request, userName, gameName){
+        return function(){
+            //alert('dont call it a call back');
+            if (request.readyState == 4){                
+                if (request.status == 200){      
+                    var result = request.responseText;
+                    if(result != null && result != ''){
+                        alert(result);
+                    }
+                    else{
+                        socketConnect(userName, gameName);
+                        showGame();
+                    }
+                }
+                else if (request.status == 404){
+                    alert("Request URL does not exist");
+                }
+                else{
+                    alert("Error: status code is " + request.status);
+                }
+            }
+        }    
+    }
+
+    function showGame(){
+        document.getElementById('lobby').style.visibility = 'hidden';
+        document.getElementById('game').style.visibility = '';
+    }
+
+
+</script>
+
+    
+</body>
+
+</html>
+
+
+
