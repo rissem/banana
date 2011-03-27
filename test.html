@@ -60,7 +60,7 @@
     }
     
     function socketConnect(userName, gameName){
-        var socket = new io.Socket("localhost:1090"); 
+        var socket = new io.Socket("localhost:1091"); 
         socket.on('connect', function(){
             socket.send(userName + "." + gameName);
         });
