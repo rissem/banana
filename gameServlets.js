@@ -5,10 +5,10 @@ var http = require('http'),
     path = require('path'),
   events = require('events'),
       io = require('socket.io'), 
-	  Db = require('./lib/mongodb').Db,
-Connection = require('./lib/mongodb').Connection,
-Server = require('./lib/mongodb').Server,
-BSON = require('./lib/mongodb').BSONNative;
+	  Db = require('mongodb').Db,
+Connection = require('mongodb').Connection,
+Server = require('mongodb').Server,
+BSON = require('mongodb').BSONNative;
 
 
 
@@ -23,7 +23,7 @@ gameServlets.joinGame = function(request, response, state){
     }
     else{
         // error
-        sys.put('ERROR: game doesnt exists');
+        sys.puts('ERROR: game doesnt exists');
     }
     
     response.end();
