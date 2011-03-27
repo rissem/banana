@@ -1,1 +1,4 @@
-blah
+*Dependencies*
+npm install mongodb
+npm install socket.io
+
